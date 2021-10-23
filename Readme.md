@@ -1,1 +1,1 @@
-Module: Istio
+Istio module

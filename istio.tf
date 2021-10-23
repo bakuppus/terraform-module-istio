@@ -5,13 +5,13 @@ resource "null_resource" "download_istio" {
   # Delete on_destroy
   provisioner "local-exec" {
     when    = destroy
-    command = "rm -f sources.tar.gz"
+    command = "rm -f ./sources.tar.gz"
   }
 }
 
 resource "null_resource" "extract_istio" {
   provisioner "local-exec" {
-    command = "tar -xvzf sources.tar.gz"
+    command = "tar -xvzf ./sources.tar.gz"
   }
   depends_on = [
     null_resource.download_istio
@@ -19,13 +19,13 @@ resource "null_resource" "extract_istio" {
   # Delete on_destroy
   provisioner "local-exec" {
     when    = destroy
-    command = "rm -rf sources"
+    command = "rm -rf ./sources"
   }
 }
 
 resource "helm_release" "base" {
   name             = "${var.name_prefix}-istio-base"
-  repository       = "sources/istio/manifests/charts/"
+  repository       = "./sources/istio/manifests/charts/"
   chart            = "base"
   namespace        = var.namespace
   wait             = true
@@ -37,7 +37,7 @@ resource "helm_release" "base" {
 
 resource "helm_release" "istio-discovery" {
   name             = "${var.name_prefix}-istio-discovery"
-  repository       = "sources/istio/manifests/charts/istio-control"
+  repository       = "./sources/istio/manifests/charts/istio-control"
   chart            = "istio-discovery"
   namespace        = var.namespace
   wait             = true
@@ -49,7 +49,7 @@ resource "helm_release" "istio-discovery" {
 
 resource "helm_release" "istio-ingress" {
   name             = "${var.name_prefix}-istio-ingress"
-  repository       = "sources/istio/manifests/charts/gateways"
+  repository       = "./sources/istio/manifests/charts/gateways"
   chart            = "istio-ingress"
   namespace        = var.namespace
   wait             = true
